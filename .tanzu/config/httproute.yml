@@ -1,0 +1,26 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: tanzu-dotnet-web-app
+  annotations:
+    healthcheck.gslb.tanzu.vmware.com/service: tanzu-dotnet-web-app
+    healthcheck.gslb.tanzu.vmware.com/path: /
+    healthcheck.gslb.tanzu.vmware.com/port: "8080"
+spec:
+  parentRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: default-gateway
+    sectionName: http-tanzu-dotnet-web-app
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: tanzu-dotnet-web-app
+      port: 8080
+      weight: 1
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
+
